@@ -1,0 +1,1 @@
+insert into cards (product_type, amount, price, product_info, product_id) values ($1, $2, $3, $4, $5)

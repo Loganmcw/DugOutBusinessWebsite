@@ -3,7 +3,11 @@ import "./Nav.css";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { updateDatabaseType } from "../../ducks/reducer";
+import {
+  updateDatabaseType,
+  clearCSR,
+  updateProducts
+} from "../../ducks/reducer";
 
 class Nav extends Component {
   render() {
@@ -23,6 +27,8 @@ class Nav extends Component {
             <div
               onClick={() => {
                 this.props.updateDatabaseType(1);
+                console.log(this.props.user);
+                this.props.clearCSR();
               }}
             >
               Cards
@@ -32,16 +38,27 @@ class Nav extends Component {
             <div
               onClick={() => {
                 this.props.updateDatabaseType(2);
+                console.log(this.props.user);
+                this.props.clearCSR();
+                this.props.updateProducts();
               }}
             >
               Miscellaneous
             </div>
           </Link>
-          <a href={process.env.REACT_APP_LOGIN} className="linkCon">
-            <button>
-              <div className="loginText">Login/ Register</div>
-            </button>
-          </a>
+          {this.props.user === 0 ? (
+            <a href={process.env.REACT_APP_LOGIN} className="linkCon">
+              <button>
+                <div className="loginText">Login/ Register</div>
+              </button>
+            </a>
+          ) : (
+            <a href={process.env.REACT_APP_LOGOUT} className="linkCon">
+              <button>
+                <div className="loginText">Logout</div>
+              </button>
+            </a>
+          )}
         </div>
         <div className="footCon">
           <Link to="/">
@@ -60,11 +77,16 @@ class Nav extends Component {
 }
 
 function mapStateToProps(state) {
-  const { database } = state;
+  const { database, user } = state;
 
   return {
-    databaseType: state.databaseType
+    databaseType: state.databaseType,
+    user: state.user
   };
 }
 
-export default connect(mapStateToProps, { updateDatabaseType })(Nav);
+export default connect(mapStateToProps, {
+  clearCSR,
+  updateDatabaseType,
+  updateProducts
+})(Nav);

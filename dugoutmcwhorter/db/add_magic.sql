@@ -1,1 +1,1 @@
-insert into magic (magic_id, amount, price, apiurl, card_name, set_name, multiverse_id, color, subtypes) values ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+ insert into cards (multiverseid, amount, price, apiurl, card_name, set_name, magictype, product_info, product_type, searchNameMagic) values ($5, $1, $7, $8, $3, $4, $6, $9, $2, $10)

@@ -1,1 +1,1 @@
-insert into yugioh (yugioh_id, amount, price, apiurl, card_name, card_type, subtype) values ($1, $2, $3, $4, $5, $6, $7) 
+insert into cards (amount, price, apiurl, card_name, card_type, yugiohtype, product_type, product_info, yugiohid, searchNameYugioh) values ($1, $3, $4, $6, $8, $7, $2, $5, $6, $9) 

@@ -1,0 +1,1 @@
+select * from cards where $1 like %$2%

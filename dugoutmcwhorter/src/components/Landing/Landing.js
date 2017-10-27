@@ -4,8 +4,12 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import Nav from "../../components/Nav/Nav.js";
+import { getUserInfo } from "../../ducks/reducer";
 
-export default class Landing extends Component {
+class Landing extends Component {
+  componentDidMount() {
+    this.props.getUserInfo();
+  }
   render() {
     return (
       <div className="App">
@@ -16,3 +20,11 @@ export default class Landing extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    user: state.user
+  };
+}
+
+export default connect(mapStateToProps, { getUserInfo })(Landing);

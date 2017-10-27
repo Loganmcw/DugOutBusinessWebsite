@@ -38,15 +38,15 @@ passport.use(
     },
     function(accessToken, refreshToken, extraParams, profile, done) {
       const db = app.get("db");
-
-      db.find_user([profile.identities[0].user_id]).then(user => {
+      console.log(profile.nickname);
+      db.find_user([profile.emails[0].value]).then(user => {
         console.log(user[0]);
         if (user[0]) {
-          return done(null, user[0].id);
+          return done(null, user[0].user_id);
         } else {
           const user = profile._json;
-          db.createUser([user.identities[0].user_id]).then(user => {
-            return done(null, user[0].id);
+          db.create_user([user.email, user.name]).then(user => {
+            return done(null, user[0].user_id);
           });
         }
       });
@@ -62,6 +62,7 @@ app.get(
     failureRedirect: "/auth"
   })
 );
+
 app.get("/auth/me", (req, res) => {
   if (!req.user) {
     return res.status(404).send("User Not Found");
@@ -75,38 +76,48 @@ app.get("/auth/logout", (req, res) => {
   res.redirect(302, "http://localhost:3000/#/");
 });
 
-passport.serializeUser((id, done) => {
-  done(null, id);
+passport.serializeUser((user_id, done) => {
+  done(null, user_id);
 });
-passport.deserializeUser((id, done) => {
+passport.deserializeUser((user_id, done) => {
   app
     .get("db")
-    .find_current_user([id])
+    .find_current_user([user_id])
     .then(user => {
       done(null, user[0]);
     });
 });
 
-const baseUrl = "http://localhost:3000/api";
+const baseUrl = "/api";
 
-app.get(`${baseUrl}/search`, ic.search);
+app.post("/api/search", ic.search);
 
-app.get(`${baseUrl}/filter`, ic.filter);
-app.get(`${baseUrl}/sfilter`, ic.sfilter);
+app.post("/api/currentProducts", ic.cP);
 
-// app.post(`${baseUrl}/cartcard`, ic.cartcard);
-// app.post(`${baseUrl}/cartproduct`, ic.cartproduct);
+app.post("/api/filter", ic.filter);
+app.post("/api/sfilter", ic.sfilter);
 
-// app.delete(`${baseUrl}/dcartcard`, ic.dcartcard);
-// app.delete(`${baseUrl}/dcartproduct`, ic.dcartproduct);
+app.post("/api/msearch", ic.msearch);
+app.post("/api/ysearch", ic.ysearch);
 
-app.post(`${baseUrl}/addmagic`, ic.addmagic);
-app.post(`${baseUrl}/addyugioh`, ic.addyugioh);
-app.post(`${baseUrl}/addproduct`, ic.addproduct);
+// app.post("/api/mstockCheck", ic.mstockCheck);
+// app.post("/api/ystockCheck", ic.ystockCheck);
+// app.get("/api/pstockCheck", ic.pstockCheck);
 
-app.delete(`${baseUrl}/rmagic`, ic.rmagic);
-app.delete(`${baseUrl}/ryugioh`, ic.ryugioh);
-app.delete(`${baseUrl}/rproduct`, ic.rproduct);
+// app.post("/api/cartcard", ic.cartcard);
+// app.post("/api/cartproduct", ic.cartproduct);
+
+// app.delete("/api/dcartcard", ic.dcartcard);
+// app.delete("/api/dcartproduct", ic.dcartproduct);
+
+app.post("/api/addmagic", ic.addmagic);
+app.post("/api/addyugioh", ic.addyugioh);
+app.post("/api/addproduct", ic.addproduct);
+
+app.post("/api/incard", ic.inproduct);
+app.post("/api/decard", ic.deproduct);
+
+app.post("/api/rproduct", ic.rproduct);
 
 const PORT = 3005;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
