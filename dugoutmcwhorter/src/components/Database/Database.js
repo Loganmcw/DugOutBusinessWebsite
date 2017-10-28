@@ -19,7 +19,7 @@ class Database extends Component {
     };
 
     this.handleDatabaseAccess = this.handleDatabaseAccess.bind(this);
-    // this.handleStock = this.handleStock.bind(this);
+    this.handleStock = this.handleStock.bind(this);
     this.updatePrice = this.updatePrice.bind(this);
     this.updateInfo = this.updateInfo.bind(this);
     // this.addItemToCart = this.addItemToCart.bind(this);
@@ -32,18 +32,23 @@ class Database extends Component {
     this.decreaseItemInventory = this.decreaseItemInventory.bind(this);
   }
 
-  // handleStock(product) {
-  //   console.log(product);
-  //   if (product.multiverseid) {
-  //     axios.post("/api/mstockCheck", { product: product }).then(res => {
-  //       !res ? "0" : res.status(200).res.send(res);
-  //     });
-  //   } else if (product.card_type) {
-  //     axios.post("/api/ystockCheck", { product: product }).then(res => {
-  //       !res ? "0" : res.status(200).res.send(res);
-  //     });
-  //   }
-  // }
+  handleStock(product) {
+    console.log(product);
+    // if (product.multiverseid) {
+    axios
+      .get("/api/mstockCheck", {
+        product: "multiverseid",
+        type: `${product.multiverseid}`
+      })
+      .then(res => {
+        console.log("YES IT IS");
+      });
+    // } else if (product.card_type) {
+    //   axios.get("/api/ystockCheck", { product: product }).then(res => {
+    //     !res ? "0" : res.status(200).res.send(res);
+    //   });
+    // }
+  }
 
   // addItemToCart(product) {
   //   if (this.props.databaseType === 1) {
@@ -75,13 +80,13 @@ class Database extends Component {
         currentPrice: currentPrice,
         currentInfo: currentInfo
       });
-    } else if (product.data.card_type) {
+    } else if (product.card_type) {
       const { currentPrice, currentInfo } = this.state;
       axios.post("/api/addyugioh", {
         product: product,
         currentPrice: currentPrice,
         currentInfo: currentInfo,
-        yurl: `http://yugiohprices.com/api/card_data/${product.data.card_name}`
+        yurl: `http://yugiohprices.com/api/card_data/${product.card_name}`
       });
     }
   }
@@ -114,6 +119,7 @@ class Database extends Component {
         return this.props.currentSearchResults.map((product, i, arr) => {
           return (
             <div className="unDBSR">
+              <div>{product.card_name}</div>
               <img
                 className=""
                 src={
@@ -139,23 +145,18 @@ class Database extends Component {
         return this.props.currentSearchResults.map((product, i, arr) => {
           return (
             <div className="userDBSR">
+              <div>{product.card_name}</div>
               <img
                 className=""
                 src={
                   product.multiverseid !== null
-                    ? (console.log("Magic Works"),
-                      axios
-                        .post("/api/magicimg", { product: product })
-                        .then(res => {
-                          res.status(200).res.send(res);
-                        }))
+                    ? (console.log("Magic Image"),
+                      `http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${this
+                        .props.searchText}&type=card`)
                     : product.card_type !== null
-                      ? (console.log("Yugioh Works"),
-                        axios
-                          .post("/api/yugiohimg", { product: product })
-                          .then(res => {
-                            res.status(200).res.send(res);
-                          }))
+                      ? (console.log("Yugioh Image"),
+                        `http://yugiohprices.com/api/card_image/${this.props
+                          .searchText}`)
                       : (console.log("Cat Works"), "https://http.cat/204")
                 }
                 alt=""
@@ -175,6 +176,7 @@ class Database extends Component {
         return this.props.currentSearchResults.map((product, i, arr) => {
           console.log(this.props.currentSearchResults[i]);
           if (product.multiverseid) {
+            console.log("Not Here");
             return (
               <div className="adminDBSR">
                 <div>{product.name}</div>
@@ -182,11 +184,10 @@ class Database extends Component {
                   className=""
                   src={
                     product.imageUrl
-                      ? product.imageUrl
-                      : product.data.card_type
+                      ? (console.log("Magic Image"), product.imageUrl)
+                      : product.card_type
                         ? (console.log("I think so"),
-                          `http://yugiohprices.com/api/card_image/${product.data
-                            .name}`)
+                          `http://yugiohprices.com/api/card_image/${product.name}`)
                         : "https://http.cat/204"
                   }
                   alt=""
@@ -205,19 +206,19 @@ class Database extends Component {
                     console.log("Increase Item Hopefully");
                   }}
                 >
-                  +
+                  Increase
                 </button>
                 {
-                  // <div className="productInStock">
-                  //   {this.handleStock(product)}
-                  // </div>
+                  <div className="productInStock">
+                    {this.handleStock(product)}
+                  </div>
                 }
                 <button
                   onClick={() => {
                     this.decreaseItemInventory(product);
                   }}
                 >
-                  -
+                  Decrease
                 </button>
                 <button
                   onClick={() => {
@@ -247,19 +248,19 @@ class Database extends Component {
                 <br />
               </div>
             );
-          } else if (!product.cmc && product.data.card_type) {
+          } else {
+            console.log("Get Here Please");
             return (
               <div className="adminDBSR">
-                <div>{product.data.name}</div>
+                <div>{product.name}</div>
                 <img
                   className=""
                   src={
                     product.imageUrl
                       ? product.imageUrl
-                      : product.data.card_type
+                      : product.card_type
                         ? (console.log("I think so"),
-                          `http://yugiohprices.com/api/card_image/${product.data
-                            .name}`)
+                          `http://yugiohprices.com/api/card_image/${product.name}`)
                         : "https://http.cat/204"
                   }
                   alt=""
@@ -281,9 +282,9 @@ class Database extends Component {
                   +
                 </button>
                 {
-                  // <div className="productInStock">
-                  //   {this.handleStock(product)}
-                  // </div>
+                  <div className="productInStock">
+                    {this.handleStock(product)}
+                  </div>
                 }
                 <button
                   onClick={() => {
@@ -333,17 +334,15 @@ class Database extends Component {
                 <img
                   className="productImg"
                   src={
-                    !product.imageUrl
-                      ? "https://http.cat/204"
-                      : product.imageUrl
+                    !product.imgurl ? "https://http.cat/204" : product.imgurl
                   }
                   alt=""
                 />
                 <div className="productPrice">{product.price}</div>
 
-                {/* <div className="productInStock">
+                <div className="productInStock">
                   {this.handleStock(product)}
-                </div> */}
+                </div>
 
                 <div className="productInfo">{product.product_info}</div>
               </div>
@@ -357,9 +356,7 @@ class Database extends Component {
                 <img
                   className=""
                   src={
-                    !product.imageUrl
-                      ? "https://http.cat/204"
-                      : product.imageUrl
+                    !product.imgurl ? "https://http.cat/204" : product.imgurl
                   }
                   alt=""
                 />
@@ -368,9 +365,9 @@ class Database extends Component {
                 <button /*onClick={this.removeItemFromCart(product)}*/>
                   Minus
                 </button>
-                {/* <div className="productInStock">
+                <div className="productInStock">
                   {this.handleStock(product)}
-                </div> */}
+                </div>
                 <div className="productInfo">{product.product_info}</div>
               </div>
             );
@@ -390,9 +387,9 @@ class Database extends Component {
                 >
                   Minus
                 </button>
-                {/* <div className="productInStock">
+                <div className="productInStock">
                   {this.handleStock(product)}
-                </div> */}
+                </div>
                 <div className="productInfo">
                   {this.handleProductInfo(product)}
                   <input type="text" onChange={this.updateInfo} />
@@ -424,38 +421,41 @@ class Database extends Component {
 
   increaseItemInventory(product) {
     console.log("itemincfunc");
-    if (product.multiverseid) {
-      axios.post("/api/incard", {
-        product: product.multiverseid,
-        type: "multiverseid"
-      });
-    } else if (product.card_type) {
-      axios.post("/api/incard", {
-        product: product.card_type,
-        type: "card_type"
-      });
-    } else {
-      axios.post("/api/incard", {
-        product: product.product_id,
-        type: "product_id"
-      });
-    }
+    axios.put("/api/incard", {
+      product: "multiverseid",
+      type: `${product.multiverseid}`
+    });
+    //   if (product.multiverseid) {
+    //     axios.put("/api/incard", ([
+    //      product.multiverseid,
+    //      "multiverseid"])
+    //   } else if (product.card_type) {
+    //     axios.put("/api/incard",
+    //      ([product.card_type,
+    //    "card_type"])
+    //     )
+    //   } else {
+    //     axios.put("/api/incard",
+    //      ([product.product_id,
+    //      "product_id"])
+    //     )
+    //   }
   }
 
   decreaseItemInventory(product) {
     console.log("itemdecfunc");
     if (product.multiverseid) {
-      axios.post("/api/decard", {
+      axios.put("/api/decard", {
         product: product.multiverseid,
         type: "multiverseid"
       });
     } else if (product.card_type) {
-      axios.post("/api/decard", {
+      axios.put("/api/decard", {
         product: product.card_type,
         type: "card_type"
       });
     } else {
-      axios.post("/api/decard", {
+      axios.put("/api/decard", {
         product: product.product_id,
         type: "product_id"
       });

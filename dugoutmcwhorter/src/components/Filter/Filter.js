@@ -31,21 +31,21 @@ class Filter extends Component {
     console.log(this.state.filterText);
     if (this.props.searchText === "") {
       axios
-        .post("/api/filter", { fText: this.state.filterText, fter: this.state.filter })
+        .post("/api/filter", {
+          fText: this.state.filterText,
+          fter: this.state.filter
+        })
         .then(response => {
           this.props.updateCSR(response.data);
           updateFPO(this.props.filterPopout === false ? true : false);
         });
     } else {
       axios
-        .post(
-        "/api/sfilter",
-        {
+        .post("/api/sfilter", {
           fText: this.state.filterText,
           fter: this.state.filter,
           sText: this.props.searchText
-        }
-        )
+        })
         .then(response => {
           this.props.updateCSR(response.data);
           updateFPO(this.props.filterPopout === false ? true : false);

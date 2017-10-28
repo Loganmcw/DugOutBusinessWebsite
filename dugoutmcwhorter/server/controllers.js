@@ -1,9 +1,8 @@
 const axios = require("axios");
 module.exports = {
   search: (req, res, next) => {
-    console.log("We Here");
     const { banana } = req.body.params;
-    console.log(banana);
+    console.log("Text Check: ", banana);
     const dbInstance = req.app.get("db");
     dbInstance
       .get_products([`%${banana}%`])
@@ -118,11 +117,9 @@ module.exports = {
   },
 
   inproduct: (req, res, next) => {
-    const { product, type } = req.body;
     const dbInstance = req.app.get("db");
-    console.log("inproduct hit", product, type);
     dbInstance
-      .increase_product([product, type])
+      .increase_product([req.body.product, req.body.type])
       .then(resp => {
         res.status(200).send();
       })
@@ -157,17 +154,16 @@ module.exports = {
         res.status(200).send(response.data);
       });
   },
-  // mstockCheck: (req, res, next) => {
-  //   const { product } = req.body;
-  //   const dbInstance = req.app.get("db");
-  //   dbInstance
-  //     .find_product([product.multiverseid, "multiverseid"])
-  //     .then(resp => {
-  //       console.log(resp);
-  //       res.status(200).send(resp);
-  //     })
-  //     .catch(() => res.status(500).send());
-  // },
+  mstockCheck: (req, res, next) => {
+    const dbInstance = req.app.get("db");
+    dbInstance
+      .find_product([req.body.product, req.body.type])
+      .then(resp => {
+        console.log(resp);
+        res.status(200).send(resp);
+      })
+      .catch(() => res.status(500).send());
+  },
   // ystockCheck: (req, res, next) => {
   //   const { product } = req.body;
   //   const dbInstance = req.app.get("db");

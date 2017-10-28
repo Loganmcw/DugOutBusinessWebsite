@@ -1,4 +1,3 @@
-select * from cards where card_name like $1
-
+select * from cards where searchNameMagic like $1 or searchNameYugioh like $1
 
 

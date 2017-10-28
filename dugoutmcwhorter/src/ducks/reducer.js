@@ -36,10 +36,19 @@ export function updateST(value) {
   };
 }
 export function updateCSR(value) {
-  console.log(value);
+  const tempCSR = [];
+  value.map((product, i, arr) => {
+    if (product.multiverseid) {
+      tempCSR.push(product);
+    } else if (product.card_type) {
+      console.log("Get Here Please");
+      tempCSR.push(product);
+    }
+  });
+  console.log(tempCSR);
   return {
     type: UPDATE_CSR,
-    payload: value
+    payload: tempCSR
   };
 }
 export function updateProducts() {

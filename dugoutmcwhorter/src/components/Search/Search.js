@@ -55,7 +55,7 @@ class Search extends Component {
         params: { banana: this.state.tempSearchText }
       })
       .then(response => {
-        !response.data.data ? null : tempCSR.push(response.data);
+        !response.data.data ? null : tempCSR.push(response.data.data);
         console.log("HASyugioh", response.data);
         axios
           .post("/api/msearch", {
@@ -67,7 +67,6 @@ class Search extends Component {
               : (tempCSR = [...tempCSR, ...response.data.cards]);
             console.log("HASmagic", response.data);
             this.props.updateCSR(tempCSR);
-            console.log(tempCSR);
           });
       })
       .catch(error => {});

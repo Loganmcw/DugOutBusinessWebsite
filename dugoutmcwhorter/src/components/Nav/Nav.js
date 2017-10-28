@@ -49,7 +49,9 @@ class Nav extends Component {
           {this.props.user === 0 ? (
             <a href={process.env.REACT_APP_LOGIN} className="linkCon">
               <button>
-                <div className="loginText">Login/ Register</div>
+                <div style={{ padding: 25 }} className="loginText">
+                  Login/ Register
+                </div>
               </button>
             </a>
           ) : (

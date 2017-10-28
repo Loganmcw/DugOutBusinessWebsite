@@ -100,8 +100,8 @@ app.post("/api/sfilter", ic.sfilter);
 app.post("/api/msearch", ic.msearch);
 app.post("/api/ysearch", ic.ysearch);
 
-// app.post("/api/mstockCheck", ic.mstockCheck);
-// app.post("/api/ystockCheck", ic.ystockCheck);
+app.get("/api/mstockCheck", ic.mstockCheck);
+// app.get("/api/ystockCheck", ic.ystockCheck);
 // app.get("/api/pstockCheck", ic.pstockCheck);
 
 // app.post("/api/cartcard", ic.cartcard);
@@ -114,8 +114,8 @@ app.post("/api/addmagic", ic.addmagic);
 app.post("/api/addyugioh", ic.addyugioh);
 app.post("/api/addproduct", ic.addproduct);
 
-app.post("/api/incard", ic.inproduct);
-app.post("/api/decard", ic.deproduct);
+app.put("/api/incard", ic.inproduct);
+app.put("/api/decard", ic.deproduct);
 
 app.post("/api/rproduct", ic.rproduct);
 
