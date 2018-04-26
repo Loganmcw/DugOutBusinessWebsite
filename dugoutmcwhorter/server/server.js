@@ -36,7 +36,7 @@ passport.use(
       clientSecret: process.env.AUTH_CLIENT_SECRET,
       callbackURL: process.env.CALLBACK_URL
     },
-    function(accessToken, refreshToken, extraParams, profile, done) {
+    function (accessToken, refreshToken, extraParams, profile, done) {
       const db = app.get("db");
       console.log(profile.nickname);
       db.find_user([profile.emails[0].value]).then(user => {
@@ -97,27 +97,37 @@ app.post("/api/currentProducts", ic.cP);
 app.post("/api/filter", ic.filter);
 app.post("/api/sfilter", ic.sfilter);
 
-app.post("/api/msearch", ic.msearch);
-app.post("/api/ysearch", ic.ysearch);
+app.get("/api/msearch/:id", ic.msearch);
+app.get("/api/ysearch/:id", ic.ysearch);
 
-app.get("/api/mstockCheck", ic.mstockCheck);
-// app.get("/api/ystockCheck", ic.ystockCheck);
-// app.get("/api/pstockCheck", ic.pstockCheck);
+app.get("/api/mstockCheck/:id", ic.mstockCheck);
+app.get("/api/ystockCheck/:id", ic.ystockCheck);
+app.get("/api/pstockCheck/:id", ic.pstockCheck);
 
-// app.post("/api/cartcard", ic.cartcard);
-// app.post("/api/cartproduct", ic.cartproduct);
+app.post("/api/cartadd/:card/:user", ic.cartadd);
+app.post("/api/cartremove/:card/:user", ic.cartremove);
 
-// app.delete("/api/dcartcard", ic.dcartcard);
-// app.delete("/api/dcartproduct", ic.dcartproduct);
+app.get("/api/checkCart/:user/:id", ic.checkCart);
+app.get("/api/wishlist/:id", ic.wishlist)
 
 app.post("/api/addmagic", ic.addmagic);
 app.post("/api/addyugioh", ic.addyugioh);
 app.post("/api/addproduct", ic.addproduct);
 
-app.put("/api/incard", ic.inproduct);
-app.put("/api/decard", ic.deproduct);
+app.put("/api/inmagic", ic.inmagic);
+app.put("/api/inyugioh", ic.inyugioh);
+app.put("/api/inproduct", ic.inproduct);
 
-app.post("/api/rproduct", ic.rproduct);
+app.put("/api/demagic", ic.demagic);
+app.put("/api/deyugioh", ic.deyugioh);
+app.put("/api/deproduct", ic.deproduct);
+
+app.post("/api/cartincrease/:card/:user", ic.cartincrease);
+app.post("/api/cartdecrease/:card/:user", ic.cartdecrease);
+
+app.delete("/api/rproduct/:id", ic.rproduct);
+app.delete("/api/rmagic/:id", ic.rmagic);
+app.delete("/api/ryugioh/:id", ic.ryugioh);
 
 const PORT = 3005;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));

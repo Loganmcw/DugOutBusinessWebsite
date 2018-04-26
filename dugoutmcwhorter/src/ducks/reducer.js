@@ -6,7 +6,9 @@ const initialState = {
   searchText: "",
   currentSearchResults: [],
   filterPopout: false,
-  currentProducts: []
+  currentProducts: [],
+  wishlistView: false,
+  currentWishlist: []
 };
 
 const GET_USER_INFO = "GET_USER_INFO";
@@ -16,6 +18,22 @@ const UPDATE_ST = "UPDATE_ST";
 const UPDATE_CSR = "UPDATE_CSR";
 const CLEAR_CSR = "CLEAR_CSR";
 const UPDATE_PRODUCTS = "UPDATE_PRODUCTS";
+const WLTOGGLE = "WLTOGGLE";
+const UPDATEWL = "UPDATEWL";
+
+export function updateWishlist(value) {
+  return {
+    type: UPDATEWL,
+    payload: value
+  }
+}
+
+export function toggleWishlist(value) {
+  return {
+    type: WLTOGGLE,
+    payload: value
+  }
+}
 
 export function clearCSR() {
   return {
@@ -94,6 +112,10 @@ export default function reducer(state = initialState, action) {
       return Object.assign({}, state, { currentSearchResults: action.payload });
     case CLEAR_CSR:
       return Object.assign({}, state, { currentSearchResults: action.payload });
+    case WLTOGGLE:
+      return Object.assign({}, state, { wishlistView: action.payload });
+    case UPDATEWL:
+      return Object.assign({}, state, { currentWishlist: action.payload })
     default:
       return state;
   }

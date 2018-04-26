@@ -1,0 +1,1 @@
+select * from cart where user_id = $1 and card_id = $2

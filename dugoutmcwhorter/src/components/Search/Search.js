@@ -43,7 +43,7 @@ class Search extends Component {
           console.log(response.data),
           this.props.updateCSR(response.data);
       })
-      .catch(error => {});
+      .catch(error => { });
   }
 
   handleAdminSearch() {
@@ -51,16 +51,12 @@ class Search extends Component {
     console.log(this.state.tempSearchText);
     let tempCSR = [];
     axios
-      .post("/api/ysearch", {
-        params: { banana: this.state.tempSearchText }
-      })
+      .get(`/api/ysearch/${this.state.tempSearchText}`)
       .then(response => {
         !response.data.data ? null : tempCSR.push(response.data.data);
         console.log("HASyugioh", response.data);
         axios
-          .post("/api/msearch", {
-            params: { banana: this.state.tempSearchText }
-          })
+          .get(`/api/msearch/${this.state.tempSearchText}`)
           .then(response => {
             !response.data.cards
               ? null
@@ -69,7 +65,7 @@ class Search extends Component {
             this.props.updateCSR(tempCSR);
           });
       })
-      .catch(error => {});
+      .catch(error => { });
 
     console.log(this.props.currentSearchResults);
   }
@@ -77,7 +73,7 @@ class Search extends Component {
     if (this.props.databaseType === 1) {
       if (this.props.user === 0) {
         return (
-          <div className="searchCon">
+          <div className="resultCon">
             <input
               className="textInput"
               placeholder="|..."
@@ -89,6 +85,7 @@ class Search extends Component {
               onClick={console.log(this.props.searchText)}
             />
             <button
+              className="button"
               type="submit"
               onClick={() => {
                 this.handleSearch();
@@ -97,6 +94,7 @@ class Search extends Component {
               Search
             </button>
             <button
+              className="button"
               type="submit"
               onClick={filterBoolean => {
                 this.props.updateFPO(
@@ -110,7 +108,7 @@ class Search extends Component {
         );
       } else if (this.props.user.loa === 1) {
         return (
-          <div className="searchCon">
+          <div className="resultCon">
             <input
               className="textInput"
               placeholder="|..."
@@ -122,6 +120,7 @@ class Search extends Component {
               onClick={console.log(this.props.searchText)}
             />
             <button
+              className="button"
               type="submit"
               onClick={() => {
                 this.handleSearch();
@@ -130,6 +129,7 @@ class Search extends Component {
               Search
             </button>
             <button
+              className="button"
               type="submit"
               onClick={filterBoolean => {
                 this.props.updateFPO(
@@ -143,7 +143,7 @@ class Search extends Component {
         );
       } else if (this.props.user.loa === 2) {
         return (
-          <div className="searchCon">
+          <div className="resultCon">
             <input
               className="textInput"
               placeholder="|..."
@@ -155,6 +155,7 @@ class Search extends Component {
               onClick={console.log(this.props.searchText)}
             />
             <button
+              className="button"
               type="submit"
               onClick={() => {
                 this.handleAdminSearch();
@@ -166,25 +167,32 @@ class Search extends Component {
         );
       }
     } else if (this.props.databaseType === 2) {
-      if (this.props.user === 2) {
+      if (this.props.user.loa === 2) {
         return (
           <div className="addProductCon">
             <input
+              className="textInput"
               placeholder="Info..."
               type="text"
               onChange={this.updateInfo}
             />
+            <br />
             <input
+              className="textInput"
               placeholder="Price..."
               type="text"
               onChange={this.updatePrice}
             />
+            <br />
             <input
+              className="textInput"
               placeholder="Insert Image Url Here"
               type="text"
               onChange={this.handleImgUrl}
             />
+            <br />
             <button
+              className="button"
               onClick={() => {
                 this.addProduct();
               }}

@@ -1,1 +1,1 @@
-INSERT INTO users (auth_id, username) VALUES ($1, $2)
+INSERT INTO users (auth_id, username, loa) VALUES ($1, $2, 1)

@@ -1,0 +1,1 @@
+select amount from cards where product_id = $1

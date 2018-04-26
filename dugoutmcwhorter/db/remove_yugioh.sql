@@ -1,0 +1,1 @@
+delete from cards where yugiohid = $1

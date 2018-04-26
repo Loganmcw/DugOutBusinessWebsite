@@ -1,0 +1,1 @@
+insert into cart (card_id, user_id, cartAmount) values ($1, $2, $3)

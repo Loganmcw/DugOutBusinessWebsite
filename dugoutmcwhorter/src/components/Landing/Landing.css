@@ -1,0 +1,85 @@
+.App {
+  background: url("generalshopview.JPG");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+  position: fixed;
+  /* z-index: -1; */
+}
+
+.infoCon1 {
+  animation-name: fadeIn;
+  animation-duration: 0.7s;
+  position: absolute;
+  top: 25%;
+  width: 40%;
+  left: 5%;
+  background-color: rgba(255, 255, 255, 0.9);
+  /* z-index: 2; */
+  padding: 12px 25px 12px 25px;
+  background: radial-gradient(
+    ellipse closest-side,
+    rgba(228, 228, 228, 0.95),
+    rgba(204, 204, 204, 0.9) 50%,
+    rgba(170, 170, 170, 0.85) 90%,
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.infoText1 {
+  animation-name: fadeIn;
+  animation-duration: 1s;
+  margin: 48px 40px 43px 23px;
+  color: rgb(22, 22, 110);
+  /* z-index: 3; */
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  opacity: 1;
+  font-family: "Tienne", serif;
+  font-size: 20px;
+  text-shadow: 0.8px 0.3px rgb(0, 0, 0);
+  text-indent: 50px;
+}
+
+.infoCon2 {
+  animation-name: fadeIn;
+  animation-duration: 0.7s;
+  position: absolute;
+  top: 55%;
+  width: 40%;
+  left: 50%;
+  background-color: rgba(255, 255, 255, 0.9);
+  /* z-index: 2; */
+  padding: 12px 25px 12px 25px;
+  background: radial-gradient(
+    ellipse closest-side,
+    rgba(228, 228, 228, 0.8),
+    rgba(204, 204, 204, 0.75) 50%,
+    rgba(170, 170, 170, 0.7) 92%,
+    rgba(255, 255, 255, 0)
+  );
+}
+
+.infoText2 {
+  margin: 48px 40px 43px 23px;
+  color: rgb(22, 22, 110);
+  /* z-index: 3; */
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  opacity: 1;
+  font-family: "Tienne", serif;
+  font-size: 20px;
+  text-shadow: 0.8px 0.3px rgb(0, 0, 0);
+  text-indent: 50px;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+.author {
+  animation-duration: 1s;
+  text-indent: 50px;
+  font-size: 24px;
+  animation-name: fadeIn;
+}

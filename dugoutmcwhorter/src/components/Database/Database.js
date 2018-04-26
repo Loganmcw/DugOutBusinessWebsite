@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Nav from "../../components/Nav/Nav.js";
 import Search from "../Search/Search.js";
 import Filter from "../Filter/Filter.js";
-import {} from "../../ducks/reducer";
+import { } from "../../ducks/reducer";
 
 class Database extends Component {
   constructor() {
@@ -15,62 +15,109 @@ class Database extends Component {
       crs: [],
       currentPrice: 0,
       cartItemRemoval: false,
-      currentInfo: ""
+      currentInfo: "",
+      currentStock: 0,
+      currentProduct: [],
     };
 
     this.handleDatabaseAccess = this.handleDatabaseAccess.bind(this);
-    this.handleStock = this.handleStock.bind(this);
+    // this.handleStock = this.handleStock.bind(this);
     this.updatePrice = this.updatePrice.bind(this);
     this.updateInfo = this.updateInfo.bind(this);
-    // this.addItemToCart = this.addItemToCart.bind(this);
-    // this.removeItemFromCart = this.removeItemFromCart.bind(this);
+    this.addItemToCart = this.addItemToCart.bind(this);
+    this.removeItemFromCart = this.removeItemFromCart.bind(this);
     this.addToInventory = this.addToInventory.bind(this);
     this.removeFromInventory = this.removeFromInventory.bind(this);
     this.handleProductPrice = this.handleProductPrice.bind(this);
     this.handleProductInfo = this.handleProductInfo.bind(this);
     this.increaseItemInventory = this.increaseItemInventory.bind(this);
     this.decreaseItemInventory = this.decreaseItemInventory.bind(this);
+    this.handleProductStockCheckAdd = this.handleProductStockCheckAdd.bind(this);
+    this.handleProductStockCheckRemove = this.handleProductStockCheckRemove.bind(this);
+
+
   }
 
   handleStock(product) {
-    console.log(product);
-    // if (product.multiverseid) {
-    axios
-      .get("/api/mstockCheck", {
-        product: "multiverseid",
-        type: `${product.multiverseid}`
+    if (product.multiverseid) {
+      axios.get(`/api/mstockCheck/${product.multiverseid}`).then(resp => {
+        console.log(resp.amount);
+        return resp.amount;
       })
-      .then(res => {
-        console.log("YES IT IS");
-      });
-    // } else if (product.card_type) {
-    //   axios.get("/api/ystockCheck", { product: product }).then(res => {
-    //     !res ? "0" : res.status(200).res.send(res);
-    //   });
-    // }
+    } else if (product.card_type) {
+      axios.get(`/api/ystockCheck/${product.card_name}`).then(resp => {
+        console.log(resp)
+        return resp;
+      })
+    } else if (product.product_id) {
+      axios.get(`/api/pstockCheck/${product.product_id}`).then(resp => {
+        console.log(resp)
+        return resp;
+      })
+    }
   }
 
-  // addItemToCart(product) {
-  //   if (this.props.databaseType === 1) {
-  //     if (product.product_type === 2 || 3) {
-  //       axios.post("http://localhost:3005/api/cartcard", product);
-  //     }
-  //   } else if (this.props.databaseType === 2) {
-  //     axios.post("http://localhost:3005/api/cartproduct", product);
-  //   }
-  // }
+  handleProductStockCheckAdd(product) {
+    this.setState({
+      currentProduct: product
+    })
+    console.log("Product is: ", product.card_id);
+    console.log("It Tried To Check", product, "CARD RESP", this.state.currentProduct);
+    axios
+      .get(`/api/checkCart/${this.props.user.user_id}/${product.card_id}`)
+      .then((stockAmount) => {
+        console.log("Work?", stockAmount);
+        if (!stockAmount.data || stockAmount.data == 0 || stockAmount.data == []) {
+          console.log("Stock Empty")
+          this.setState({ currentStock: 1 })
+          this.addItemToCart();
+        } else {
+          this.setState({ currentStock: stockAmount.data[0] })
+          this.addItemToCart();
+          console.log("AddAttempt")
+        };
+        console.log(this.state.currentProduct)
+      });
+  }
+  addItemToCart() {
+    console.log("Trying to Add", this.state.currentStock.amount)
+    if (this.state.currentStock.amount > 0) {
+      console.log("It Tried To Increase");
+      axios.post(`/api/cartincrease/${this.state.currentProduct.card_id}/${this.props.user.user_id}`);
+    } else {
+      console.log("It Tried To Add");
+      axios.post(`/api/cartadd/${this.state.currentProduct.card_id}/${this.props.user.user_id}`);
+    }
+  }
+  handleProductStockCheckRemove(product) {
+    this.setState({
+      currentProduct: product
+    })
+    axios
+      .get(`/api/checkCart/${this.props.user.user_id}/${product.card_id}`)
+      .then((stockAmount) => {
+        console.log("Work?", stockAmount.data[0]);
+        if (!stockAmount.data || stockAmount.data == 0 || stockAmount.data == []) {
+          console.log("Stock Empty")
+        } else {
+          this.setState({ currentStock: stockAmount.data[0] })
+          this.removeItemFromCart();
+          console.log("RemoveAttempt")
+        };
+      });
+  }
+  removeItemFromCart() {
+    console.log("Trying to Remove", this.state.currentStock.amount)
+    if (this.state.currentStock.amount > 1) {
+      console.log("It Tried To Decrease");
+      axios.post(`/api/cartdecrease/${this.state.currentProduct.card_id}/${this.props.user.user_id}`);
+    } else if (this.state.currentStock.amount <= 1) {
+      console.log("It Tried To Remove");
+      axios.post(`/api/cartremove/${this.state.currentProduct.card_id}/${this.props.user.user_id}`);
+    }
+  }
 
-  // removeItemFromCart(product) {
-  //   if (this.props.databaseType === 1) {
-  //     if (product.product_type === 2) {
-  //       axios.delete("http://localhost:3005/api/dcartcard", product);
-  //     }
-  //   } else if (this.props.databaseType === 2) {
-  //     axios.delete("http://localhost:3005/api/dcartproduct", product);
-  //   }
-  // }
   addToInventory(product) {
-    console.log("It clicked!");
     if (product.multiverseid) {
       const { currentPrice, currentInfo } = this.state;
       console.log(product);
@@ -81,6 +128,7 @@ class Database extends Component {
         currentInfo: currentInfo
       });
     } else if (product.card_type) {
+      console.log("Yugioh Card Info Add", product)
       const { currentPrice, currentInfo } = this.state;
       axios.post("/api/addyugioh", {
         product: product,
@@ -92,50 +140,49 @@ class Database extends Component {
   }
 
   removeFromInventory(product) {
+    const { multiverseid, product_id } = product;
+    console.log("It clicked!", product.name);
     if (this.props.databaseType === 1) {
       if (product.multiverseid) {
-        axios.post("/api/rproduct", {
-          product: product.multiverseid,
-          type: "multiverseid"
-        });
+        axios.delete(`/api/rmagic/${multiverseid}`
+        );
       } else if (product.card_type) {
-        axios.post("/api/rproduct", {
-          product: product.card_type,
-          type: "card_type"
-        });
+        axios.delete(`/api/ryugioh/${product.name}`
+        );
       }
     } else if (this.props.databaseType === 2) {
-      axios.post("/api/rproduct", {
-        product: product.product_id,
-        type: "product_id"
-      });
+      axios.delete(`/api/rproduct/${product_id}`
+      );
     }
   }
 
   handleDatabaseAccess() {
-    console.log(this.props.currentSearchResults);
+    console.log(this.props.user);
     if (this.props.databaseType === 1) {
       if (this.props.user === 0) {
         return this.props.currentSearchResults.map((product, i, arr) => {
           return (
             <div className="unDBSR">
-              <div>{product.card_name}</div>
+              <div className="cardName">{product.card_name}</div>
               <img
-                className=""
+                className="pimg"
                 src={
                   product.multiverseid !== null
-                    ? `http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${this
-                        .props.searchText}&type=card`
+                    ? `http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${product.multiverseid}&type=card`
                     : product.card_type !== null
                       ? `http://yugiohprices.com/api/card_image/${this.props
-                          .searchText}`
+                        .searchText}`
                       : (console.log("Cat Works"), "https://http.cat/204")
                 }
                 alt=""
               />
-              <div className="productPrice">{product.price}</div>
-              <div className="productInStock">{product.amount}</div>
-              <div className="productInfo">{product.product_info}</div>
+              <br />
+              <div className="unInfo">
+                <div className="productPrice">${product.price},</div>
+                <div className="productInStock">{product.amount} In Stock</div>
+                <br />
+                <div className="productInfo">{product.product_info}</div>
+              </div>
             </div>
           );
         });
@@ -145,14 +192,13 @@ class Database extends Component {
         return this.props.currentSearchResults.map((product, i, arr) => {
           return (
             <div className="userDBSR">
-              <div>{product.card_name}</div>
+              <div className="cardName">{product.card_name}</div>
               <img
-                className=""
+                className="pimg"
                 src={
                   product.multiverseid !== null
                     ? (console.log("Magic Image"),
-                      `http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${this
-                        .props.searchText}&type=card`)
+                      `http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${product.multiverseid}&type=card`)
                     : product.card_type !== null
                       ? (console.log("Yugioh Image"),
                         `http://yugiohprices.com/api/card_image/${this.props
@@ -161,12 +207,23 @@ class Database extends Component {
                 }
                 alt=""
               />
-              <div className="productPrice">{product.price}</div>
-              <button /*onClick={this.addItemToCart(product)}*/>Add</button>
-              <button /*onClick={this.removeItemFromCart(product)}*/>
-                Minus
+              <div className="productPrice">${product.price},</div>
+              <button
+                onClick={() => {
+                  this.handleProductStockCheckAdd(product);
+                  console.log(product)
+                }}
+              >
+                Add
               </button>
-              <div className="productInStock">{product.amount}</div>
+              <button
+                onClick={() => {
+                  this.handleProductStockCheckRemove(product);
+                }}
+              >
+                Remove
+              </button>
+              <div className="productInStock">{product.amount} In Stock</div>
               <div className="productInfo">{product.product_info}</div>
             </div>
           );
@@ -174,17 +231,15 @@ class Database extends Component {
       } else if (this.props.user.loa === 2) {
         console.log("I tried");
         return this.props.currentSearchResults.map((product, i, arr) => {
-          console.log(this.props.currentSearchResults[i]);
           if (product.multiverseid) {
-            console.log("Not Here");
             return (
               <div className="adminDBSR">
-                <div>{product.name}</div>
+                <div className="cardName">{product.name}</div>
                 <img
-                  className=""
+                  className="pimg"
                   src={
                     product.imageUrl
-                      ? (console.log("Magic Image"), product.imageUrl)
+                      ? product.imageUrl
                       : product.card_type
                         ? (console.log("I think so"),
                           `http://yugiohprices.com/api/card_image/${product.name}`)
@@ -194,6 +249,7 @@ class Database extends Component {
                 />
                 <br />
                 <button
+                  className="btnArea"
                   onClick={() => {
                     this.addToInventory(product);
                   }}
@@ -201,33 +257,29 @@ class Database extends Component {
                   Add to Inventory
                 </button>
                 <button
+                  className="btnArea"
                   onClick={() => {
                     this.increaseItemInventory(product);
                     console.log("Increase Item Hopefully");
                   }}
                 >
-                  Increase
+                  +
                 </button>
-                {
-                  <div className="productInStock">
-                    {this.handleStock(product)}
-                  </div>
-                }
+
+                <div className="productInStock">
+                  {this.handleStock(product)} In Stock
+                </div>
+
                 <button
+                  className="btnArea"
                   onClick={() => {
                     this.decreaseItemInventory(product);
                   }}
                 >
-                  Decrease
+                  -
                 </button>
-                <button
-                  onClick={() => {
-                    this.removeFromInventory(product);
-                  }}
-                >
-                  Remove from Inventory
-                </button>
-                <div className="productInfo">
+                <br />
+                <div className="productInfoInsert">
                   {this.handleProductInfo(product)}
                   <input
                     type="text"
@@ -235,13 +287,22 @@ class Database extends Component {
                     placeholder="Insert Info"
                   />
                 </div>
-                <div className="productPrice">
+                <div className="productPriceInsert">
                   {this.handleProductPrice(product)}
                   <input
                     type="text"
                     onChange={this.updatePrice}
                     placeholder="Insert Price"
                   />
+                  <br />
+                  <button
+                    className="btnArea"
+                    onClick={() => {
+                      this.removeFromInventory(product);
+                    }}
+                  >
+                    Remove from Inventory
+                  </button>
                 </div>
                 <br />
                 <br />
@@ -252,9 +313,9 @@ class Database extends Component {
             console.log("Get Here Please");
             return (
               <div className="adminDBSR">
-                <div>{product.name}</div>
+                <div className="cardName">{product.name}</div>
                 <img
-                  className=""
+                  className="pimg"
                   src={
                     product.imageUrl
                       ? product.imageUrl
@@ -279,19 +340,19 @@ class Database extends Component {
                     console.log("Increase Item Hopefully");
                   }}
                 >
-                  +
+                  Increase
                 </button>
-                {
-                  <div className="productInStock">
-                    {this.handleStock(product)}
-                  </div>
-                }
+
+                <div className="productInStock">
+                  {this.handleStock(product)} In Stock
+                </div>
+
                 <button
                   onClick={() => {
                     this.decreaseItemInventory(product);
                   }}
                 >
-                  -
+                  Decrease
                 </button>
                 <button
                   onClick={() => {
@@ -300,7 +361,7 @@ class Database extends Component {
                 >
                   Remove from Inventory
                 </button>
-                <div className="productInfo">
+                <div className="productInfoInsert">
                   {this.handleProductInfo(product)}
                   <input
                     type="text"
@@ -308,7 +369,7 @@ class Database extends Component {
                     placeholder="Insert Info"
                   />
                 </div>
-                <div className="productPrice">
+                <div className="productPriceInsert">
                   {this.handleProductPrice(product)}
                   <input
                     type="text"
@@ -338,12 +399,12 @@ class Database extends Component {
                   }
                   alt=""
                 />
-                <div className="productPrice">{product.price}</div>
-
+                <div className="productPrice">${product.price}</div>
+                <div className="productInStock">{product.amount} In Stock</div>
                 <div className="productInStock">
-                  {this.handleStock(product)}
+                  {() => { this.handleStock(product) }} In Stock
                 </div>
-
+                <div className="productInStock">{product.amount} In Stock</div>
                 <div className="productInfo">{product.product_info}</div>
               </div>
             );
@@ -354,20 +415,28 @@ class Database extends Component {
             return (
               <div className="userDBSR">
                 <img
-                  className=""
+                  className="pimg"
                   src={
                     !product.imgurl ? "https://http.cat/204" : product.imgurl
                   }
                   alt=""
                 />
-                <div className="productPrice">{product.price}</div>
-                <button /*onClick={this.addItemToCart(product)}*/>Add</button>
-                <button /*onClick={this.removeItemFromCart(product)}*/>
-                  Minus
+                <div className="productPrice">${product.price}</div>
+                <button
+                  onClick={() => {
+                    this.addItemToCart(product);
+                  }}
+                >
+                  Add
                 </button>
-                <div className="productInStock">
-                  {this.handleStock(product)}
-                </div>
+                <button
+                  onClick={() => {
+                    this.removeItemFromCart(product);
+                  }}
+                >
+                  Remove
+                </button>
+                <div className="productInStock">{product.amount} In Stock</div>
                 <div className="productInfo">{product.product_info}</div>
               </div>
             );
@@ -377,7 +446,7 @@ class Database extends Component {
           return this.props.currentProducts.map((product, i, arr) => {
             return (
               <div className="adminDBSR">
-                <div className="productPrice">
+                <div className="productPriceInsert">
                   <input type="text" onChange={this.updatePrice} />
                 </div>
                 <button
@@ -388,9 +457,9 @@ class Database extends Component {
                   Minus
                 </button>
                 <div className="productInStock">
-                  {this.handleStock(product)}
+                  {this.handleStock(product)} In Stock
                 </div>
-                <div className="productInfo">
+                <div className="productInfoInsert">
                   {this.handleProductInfo(product)}
                   <input type="text" onChange={this.updateInfo} />
                 </div>
@@ -420,45 +489,32 @@ class Database extends Component {
   }
 
   increaseItemInventory(product) {
-    console.log("itemincfunc");
-    axios.put("/api/incard", {
-      product: "multiverseid",
-      type: `${product.multiverseid}`
-    });
-    //   if (product.multiverseid) {
-    //     axios.put("/api/incard", ([
-    //      product.multiverseid,
-    //      "multiverseid"])
-    //   } else if (product.card_type) {
-    //     axios.put("/api/incard",
-    //      ([product.card_type,
-    //    "card_type"])
-    //     )
-    //   } else {
-    //     axios.put("/api/incard",
-    //      ([product.product_id,
-    //      "product_id"])
-    //     )
-    //   }
+    console.log(product.name);
+    if (product.multiverseid) {
+      axios.put("/api/inmagic", {
+        product: product.multiverseid
+      });
+    } else if (product.card_type) {
+      axios.put("/api/inyugioh", {
+        product: product.name
+      });
+    } else {
+      axios.put("/api/inproduct", { product: product.product_id });
+    }
   }
 
   decreaseItemInventory(product) {
-    console.log("itemdecfunc");
+    console.log(product.name);
     if (product.multiverseid) {
-      axios.put("/api/decard", {
-        product: product.multiverseid,
-        type: "multiverseid"
+      axios.put("/api/demagic", {
+        product: product.multiverseid
       });
     } else if (product.card_type) {
-      axios.put("/api/decard", {
-        product: product.card_type,
-        type: "card_type"
+      axios.put("/api/deyugioh", {
+        product: product.name
       });
     } else {
-      axios.put("/api/decard", {
-        product: product.product_id,
-        type: "product_id"
-      });
+      axios.put("/api/deproduct", { product: product.product_id });
     }
   }
   render() {

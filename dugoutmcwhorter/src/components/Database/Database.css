@@ -1,0 +1,88 @@
+.piCon {
+  width: 100vw;
+  height: 90%;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  top: 10%;
+  font-family: "Tienne", serif;
+  overflow-y: scroll;
+}
+.unDBSR {
+  border: 5px solid #108ee9;
+  height: 51.5%;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  margin: 4px;
+  background-color: rgba(228, 228, 228, 0.9);
+  font-family: "Tienne", serif;
+}
+.userDBSR {
+  border: 5px solid #108ee9;
+  height: 51.5%;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  margin: 4px;
+  background-color: rgba(228, 228, 228, 0.9);
+  font-family: "Tienne", serif;
+}
+.adminDBSR {
+  border: 5px solid #108ee9;
+  height: 51.5%;
+  border-radius: 5px;
+  padding: 5px;
+  position: relative;
+  margin: 5px;
+  background-color: rgba(228, 228, 228, 0.9);
+  font-family: "Tienne", serif;
+}
+.pimg {
+  border-radius: 15px;
+  margin: 5px;
+  max-width: 233px;
+  min-width: 233px;
+}
+.cardName {
+  font-family: "Tienne", serif;
+  color: blue;
+}
+.productPrice {
+  font-family: "Tienne", serif;
+  margin: 0px 10px 10px 10px;
+  font-size: 20px;
+  max-height: 20px;
+}
+.productInStock {
+  font-family: "Tienne", serif;
+  margin: 0px 10px 10px 10px;
+  font-size: 20px;
+  max-height: 20px;
+}
+.productInfo {
+  position: absolute;
+  top: 86%;
+  left: 1%;
+  width: 90%;
+  font-family: "Tienne", serif;
+  margin: 0px 10px 10px 10px;
+  font-size: 15px;
+}
+.productImg {
+  border-radius: 15px;
+  margin: 5px;
+  max-width: 233px;
+  min-width: 233px;
+}
+.productInfoInsert {
+  font-family: "Tienne", serif;
+}
+.productPriceInsert {
+  font-family: "Tienne", serif;
+}
+.unInfo {
+  display: flex;
+  max-width: 233px;
+  margin-left: 10px;
+}

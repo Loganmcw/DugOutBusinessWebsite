@@ -1,0 +1,1 @@
+update cart set cartAmount = cartAmount + 1 where card_id = $1 and user_id = $2

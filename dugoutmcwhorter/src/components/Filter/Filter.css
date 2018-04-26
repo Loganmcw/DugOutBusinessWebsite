@@ -1,0 +1,22 @@
+.filterPopout {
+  left: 78.86%;
+  width: 100%;
+  animation-name: fadeIn;
+  animation-duration: 0.7s;
+  position: absolute;
+  z-index: 2;
+  top: 9.3%;
+  align-items: center;
+}
+.textInputFilter {
+  border-radius: 5px;
+  font-size: 12px;
+}
+.buttonFilter {
+  color: clear;
+  background-color: white;
+  border: 2.4px solid #108ee9;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}

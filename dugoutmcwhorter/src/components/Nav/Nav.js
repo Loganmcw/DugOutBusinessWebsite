@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
-import './Nav.css';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import "./Nav.css";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import {
   updateDatabaseType,
   clearCSR,
-  updateProducts
-} from '../../ducks/reducer';
+  updateProducts,
+  toggleWishlist,
+  updateWishlist
+} from "../../ducks/reducer";
 
 class Nav extends Component {
   render() {
@@ -16,10 +18,9 @@ class Nav extends Component {
         <ul>
           <li>
             <Link to="/">
-              <div className="titleCon ">The DugOut</div>
+              <div className="titleCon">The DugOut</div>
             </Link>
           </li>
-          <li />
           <li>
             <Link to="/database">
               <div
@@ -33,7 +34,7 @@ class Nav extends Component {
               </div>
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/database">
               <div
                 onClick={() => {
@@ -45,50 +46,61 @@ class Nav extends Component {
                 Miscellaneous
               </div>
             </Link>
-          </li>
+          </li> */}
           <li className="logout">
             {this.props.user === 0 ? (
               <a href={process.env.REACT_APP_LOGIN} className="linkCon">
                 <div className="loginText">Login/ Register</div>
               </a>
             ) : (
-              <a href={process.env.REACT_APP_LOGOUT} className="linkCon">
-                <div className="loginText">Logout</div>
-              </a>
-            )}
+                <a href={process.env.REACT_APP_LOGOUT} className="linkCon">
+                  <div className="loginText">Logout</div>
+                </a>
+              )}
+          </li>
+          <li>
+            <Link to="/about">
+              <div>About</div>
+            </Link>
+          </li>
+          <li>
+            <Link to="/contact">
+              <div>Contact</div>
+            </Link>
+          </li>
+          <li>
+            <Link to="/wishlist">
+              <div>
+                Wishlist
+              </div>
+            </Link>
           </li>
         </ul>
-        <div className="footer">
-          <ul>
-            <li />
-            <li>
-              <Link to="/about">
-                <div>About</div>
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact">
-                <div>Contact</div>
-              </Link>
-            </li>
-          </ul>
-        </div>
       </div>
     );
   }
 }
-
+// className="wishlist" onClick={() => {
+//   this.props.toggleWishlist(!this.props.wishlistView), console.log(this.props.wishlistView), console.log("User for Wishlist", this.props.user),
+//     axios.get(`/api/wishlist/${this.props.user.user_id}`).then(resp => {
+//       console.log(resp.data),
+//         this.props.updateWishlist(resp.data)
+//     })
+// }}
 function mapStateToProps(state) {
   const { database, user } = state;
 
   return {
     databaseType: state.databaseType,
-    user: state.user
+    user: state.user,
+    wishlistView: state.wishlistView
   };
 }
 
 export default connect(mapStateToProps, {
   clearCSR,
   updateDatabaseType,
-  updateProducts
+  updateProducts,
+  toggleWishlist,
+  updateWishlist
 })(Nav);

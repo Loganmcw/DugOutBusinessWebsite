@@ -1,0 +1,1 @@
+select * from cart full outer join cards on cart.card_id = cards.card_id where cart.card_id is not null and user_id = $1

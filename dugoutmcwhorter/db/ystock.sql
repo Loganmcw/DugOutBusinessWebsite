@@ -1,0 +1,1 @@
+select amount from cards where card_name = $1

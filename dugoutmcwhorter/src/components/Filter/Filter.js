@@ -52,9 +52,13 @@ class Filter extends Component {
         });
     }
   }
+
   render() {
     return (
-      <div className="filterPopout">
+      <div
+        className="filterPopout"
+        style={{ display: this.props.filterPopout ? "block" : "none" }}
+      >
         <select
           className="sort"
           value={this.state.filter}
@@ -63,10 +67,11 @@ class Filter extends Component {
           <option value="card_name">Name</option>
           <option value="set_name">Magic Set</option>
           <option value="magictype">Magic SubTypes</option>
-          <option value="card_type">Yugioh Card Type</option>
-          <option value="yugiohtype">Yugioh SubType</option>
+          <option value="card_type">Yu-Gi-Oh Card Type</option>
+          <option value="yugiohtype">Yu-Gi-Oh SubType</option>
         </select>
         <input
+          className="textInputFilter"
           placeholder="Name"
           type="text"
           onChange={e => {
@@ -74,6 +79,7 @@ class Filter extends Component {
           }}
         />
         <button
+          className="buttonFilter"
           type="submit"
           onClick={() => {
             this.handleFilter();

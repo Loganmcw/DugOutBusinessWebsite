@@ -1,0 +1,72 @@
+.App {
+  display: flex;
+  justify-content: space-between;
+}
+.main {
+  margin: auto;
+  display: flex;
+  height: 610px;
+  width: 1076px;
+  position: fixed;
+  top: 35%;
+  left: 302px;
+  animation-name: fadeIn;
+  animation-duration: 0.7s;
+}
+.youtubevideo {
+  font-family: "Tienne", serif;
+  color: clear;
+  border: 5px solid #108ee9;
+  border-radius: 10px;
+  width: 1066px;
+  height: 600px;
+  background-color: white;
+  text-align: center;
+}
+
+.mainInfo {
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  animation-name: fadeIn;
+  animation-duration: 0.7s;
+  color: rgb(22, 22, 110);
+  z-index: 3;
+  flex-wrap: wrap;
+  opacity: 1;
+  font-family: "Tienne", serif;
+  font-size: 20px;
+  text-shadow: 0.8px 0.3px rgb(0, 0, 0);
+  text-indent: 50px;
+}
+
+.textCon {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 80px 1px 120px;
+  background: radial-gradient(
+    ellipse closest-side,
+    rgba(228, 228, 228, 0.95),
+    rgba(204, 204, 204, 0.9) 50%,
+    rgba(170, 170, 170, 0.85) 90%,
+    rgba(255, 255, 255, 0)
+  );
+  animation-name: fadeIn;
+  animation-duration: 0.7s;
+  position: absolute;
+  width: 50%;
+  height: 20%;
+  top: 5%;
+  left: 19%;
+  z-index: 2;
+}
+@keyframes fadeInVideo {
+  0% {
+    opacity: 0;
+    display: none;
+  }
+  100% {
+    opacity: 1;
+    display: flex;
+  }
+}

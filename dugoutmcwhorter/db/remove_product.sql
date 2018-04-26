@@ -1,1 +1,1 @@
-delete from cards where $2 = $1
+delete from cards where product_id = $1
